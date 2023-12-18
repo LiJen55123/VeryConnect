@@ -1,0 +1,9 @@
+// styles.scss
+body {
+  background-image: url('/assets/background.jpeg');
+  background-size: cover;
+  background-position: center;
+  margin: 0; // to remove default margins
+  height: 100vh;
+  width: 100vw;
+}
