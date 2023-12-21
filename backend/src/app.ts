@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import userRoutes from './User/userRoutes'
 
 const app = express();
 const port = 8000;
@@ -14,6 +15,7 @@ mongoose.connect(mongoUri)
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+app.use(userRoutes); // Using the user routes
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
