@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: myapp-ingress
 spec:
-  ingressClassName: "gce"
+  ingressClassName: "nginx"  # Updated to NGINX Ingress class name
   rules:
   - http:
       paths:
