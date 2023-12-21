@@ -32,10 +32,9 @@ services:
   frontend:
     build:
       context: ./frontend
-      target: build-stage
-
+      target: runtime-stage
     volumes:
       - ./frontend:/app
     ports:
-      - "3000:3000"
-    command: ng serve --host 0.0.0.0 --port 3000 --disable-host-check
+      - "80:80"
+    command: ["nginx", "-g", "daemon off;"]
