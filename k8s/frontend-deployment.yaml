@@ -31,7 +31,7 @@ spec:
             - nginx
             - -g
             - daemon off;
-          image: frontend
+          image: lijen0317/frontend:latest
           name: frontend
           ports:
             - containerPort: 80

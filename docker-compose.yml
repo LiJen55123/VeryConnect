@@ -13,6 +13,7 @@ services:
 
   backend:
     build: ./backend
+    image: lijen0317/backend:latest
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -33,6 +34,7 @@ services:
     build:
       context: ./frontend
       target: runtime-stage
+    image: lijen0317/frontend:latest
     volumes:
       - ./frontend:/app
     ports:
