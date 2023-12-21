@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    # Add any other GKE-specific annotations here
+spec:
+  rules:
+  - host: backend.myapp.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/api"
+        backend:
+          service:
+            name: backend
+            port:
+              number: 8000
+  - host: frontend.myapp.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
