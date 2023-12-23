@@ -48,8 +48,5 @@ spec:
             - containerPort: 8000
               protocol: TCP
           resources: {}
-          volumeMounts:
-            - mountPath: /app
-              name: backend-claim0
       restartPolicy: Always
 status: {}
