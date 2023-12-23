@@ -5,11 +5,11 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  ingressClassName: "nginx"  # Updated to NGINX Ingress class name
+  ingressClassName: "nginx"
   rules:
   - http:
       paths:
-      - pathType: Prefix
+      - pathType: ImplementationSpecific
         path: "/api(/|$)(.*)"
         backend:
           service:
@@ -18,7 +18,7 @@ spec:
               number: 8000
   - http:
       paths:
-      - pathType: Prefix
+      - pathType: ImplementationSpecific
         path: "/"
         backend:
           service:
