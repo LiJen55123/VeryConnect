@@ -26,7 +26,8 @@ services:
       - DB_NAME=local_dev
       - DB_PORT=27017
 
-    command: npm run dev
+    command: /bin/bash -c "npm run build &&
+                            npm start"
 
   frontend:
     build:
