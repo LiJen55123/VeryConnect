@@ -2,13 +2,15 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1  # This line is added
 spec:
   ingressClassName: "nginx"  # Updated to NGINX Ingress class name
   rules:
   - http:
       paths:
       - pathType: Prefix
-        path: "/api"
+        path: "/api(/|$)(.*)"
         backend:
           service:
             name: backend

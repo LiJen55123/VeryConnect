@@ -52,8 +52,4 @@ spec:
             - mountPath: /app
               name: backend-claim0
       restartPolicy: Always
-      volumes:
-        - name: backend-claim0
-          persistentVolumeClaim:
-            claimName: backend-claim0
 status: {}
