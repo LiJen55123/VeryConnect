@@ -37,12 +37,5 @@ spec:
             - containerPort: 80
               protocol: TCP
           resources: {}
-          volumeMounts:
-            - mountPath: /app
-              name: frontend-claim0
       restartPolicy: Always
-      volumes:
-        - name: frontend-claim0
-          persistentVolumeClaim:
-            claimName: frontend-claim0
 status: {}
