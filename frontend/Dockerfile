@@ -23,6 +23,7 @@ FROM nginx:alpine AS runtime-stage
 
 # Copy the build output from the build stage
 COPY --from=build-stage /app/dist/frontend/browser /usr/share/nginx/html
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80

@@ -19,6 +19,8 @@ services:
       - "8000:8000"
     depends_on:
       - mongodb
+    volumes:
+      - ./backend:/app
     environment:
       - DB_HOST=mongodb
       - DB_USER=local_dev
@@ -33,6 +35,7 @@ services:
     build:
       context: ./frontend
       target: runtime-stage
+
     image: lijen0317/frontend:latest
     ports:
       - "80:80"
