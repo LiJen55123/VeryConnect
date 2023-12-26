@@ -42,7 +42,7 @@ spec:
               value: "27017"
             - name: DB_USER
               value: local_dev
-          image: backend
+          image: lijen0317/backend:latest
           name: backend
           ports:
             - containerPort: 8000
