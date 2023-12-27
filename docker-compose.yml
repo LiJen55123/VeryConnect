@@ -35,6 +35,8 @@ services:
     build:
       context: ./frontend
       target: runtime-stage
+      args:
+        - DEV=true
 
     image: lijen0317/frontend:latest
     ports:

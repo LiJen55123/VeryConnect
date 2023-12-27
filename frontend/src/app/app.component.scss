@@ -1,14 +1,21 @@
-:host {
+main {
   position: relative;
-
   background-color: rgba(255, 255, 255, 0.9);
-  display: flex;
-  justify-content: center;
-  padding: 20px; // Adjust as needed
-  margin: auto; // Adjust as needed
-  height: 90vh; // Full viewport height
-  width: 70vw; // Full viewport width
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9); // Optional, for a slight shadow effect
+  padding: 20px;
+  margin: auto;
+  height: 90vh;
+  width: 70vw;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
   border-style: ridge;
   border-width: 5px;
+  display: flex;
+  justify-content: center;
 }
+//
+//main {
+//  /* Remove the height to allow content to determine the size */
+//  display: flex;
+//  flex-direction: column; /* Stack children vertically */
+//  align-items: center; /* Center-align children horizontally */
+//  justify-content: flex-start; /* Align children to the start of the main axis */
+//}

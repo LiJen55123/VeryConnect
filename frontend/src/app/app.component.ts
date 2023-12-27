@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { Home } from "./Home/Home.component";
+import {Component} from '@angular/core';
+import {RouterLink, RouterOutlet} from '@angular/router';
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'app-root',
+  templateUrl: "app.component.html",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, Home],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [RouterOutlet, MatToolbarModule, MatButtonModule, RouterLink],
+  styleUrl: "app.component.scss"
 })
-export class AppComponent {
-}
+export class AppComponent {}

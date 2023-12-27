@@ -1,6 +1,7 @@
 # Stage 1: Build Stage
 FROM node:20 AS build-stage
 
+ARG DEV
 WORKDIR /app
 # Install Angular CLI globally
 RUN npm i -g @angular/cli
@@ -15,8 +16,7 @@ RUN npm install
 COPY . .
 
 # Build the Angular application in production mode
-RUN ng build --configuration production
-
+RUN if [ "$DEV" = "true" ]; then echo "DEV mode is" $DEV; else  echo "DEV mode is" && ng build --configuration production; fi
 
 # Stage 2: Runtime Stage
 FROM nginx:alpine AS runtime-stage
