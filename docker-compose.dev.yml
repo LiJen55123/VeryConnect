@@ -41,3 +41,26 @@ services:
     ports:
       - "3000:3000"
     command: ng serve --host 0.0.0.0 --port 3000 --disable-host-check
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1  # Use the version compatible with your Kibana
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Adjust the Java heap sizes as per your requirement
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.12.1  # Use the version that matches the Elasticsearch version
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata: # This volume is used for storing Elasticsearch data

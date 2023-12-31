@@ -1,21 +1,16 @@
 import {Routes} from '@angular/router';
-import {Home} from './Home/Home.component';
-import {AboutComponent} from './about/about.component'
-import { WelcomeComponent } from './welcome/welcome.component'
+import {CreateOrEditComponent} from './create-or-edit/create-or-edit.component'
+import {LandingComponent} from "./landing/landing.component";
+
 export const routes: Routes = [
+  {
+    path: 'create_edit',
+    title: 'App about Page',
+    component: CreateOrEditComponent,
+  },
   {
     path: '',
     title: 'App about Page',
-    component: WelcomeComponent,
-  },
-  {
-    path: 'home',
-    title: 'App Home Page',
-    component: Home,
-  },
-  {
-    path: 'about',
-    title: 'App about Page',
-    component: AboutComponent,
+    component: LandingComponent,
   },
 ];

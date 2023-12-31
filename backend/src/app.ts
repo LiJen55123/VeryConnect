@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import userRoutes from './User/userRoutes'
-
+import ticketRouter from './Ticket/ticketRoutes'
+import { syncMongoDBWithElasticsearch } from './elasticSearch/initialSync'; // Assuming
 const app = express();
 const port = 8000;
 
@@ -15,8 +15,9 @@ mongoose.connect(mongoUri)
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-app.use(userRoutes); // Using the user routes
-
+app.use(ticketRouter); // Using the user routes
+syncMongoDBWithElasticsearch().then(() => console.log('Sync complete.'))
+    .catch((err: Error) => console.error('An error occurred:', err));
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
