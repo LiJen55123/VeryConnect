@@ -39,8 +39,3 @@ export async function syncMongoDBWithElasticsearch(): Promise<void> {
     mongoose.connection.close();
     // esClient.close(); // Uncomment if there's a close method in your Elasticsearch client version
 }
-
-if (require.main === module) {
-    syncMongoDBWithElasticsearch()
-        .catch((err: Error) => console.error('An error occurred:', err));
-}

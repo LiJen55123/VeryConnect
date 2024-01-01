@@ -15,6 +15,7 @@
     "content-type": "^1.0.5",
     "cookie": "^0.5.0",
     "cookie-signature": "^1.0.6",
+    "cors": "^2.8.5",
     "debug": "^2.6.9",
     "define-data-property": "^1.1.1",
     "depd": "^2.0.0",
@@ -90,12 +91,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/elasticsearch": "^5.0.43",
     "@types/express": "^4.17.21",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.10.5",
     "mongoose": "^8.0.3",
-    "mongoose-auto-increment": "^3.2.4",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
