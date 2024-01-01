@@ -27,6 +27,7 @@ export class CreateOrEditComponent implements OnInit {
   public ticketId?: number;
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private apiService: ApiService
   ) { }
 
@@ -76,11 +77,28 @@ export class CreateOrEditComponent implements OnInit {
     const formData = this.ticketForm.value;
     if (this.data === 'Create') {
       // Create ticket logic
-      this.apiService.createTicket(formData).subscribe(/* ... */);
+      this.apiService.createTicket(formData).subscribe({
+        next: (response) => {
+          console.log('Ticket created successfully', response);
+          this.router.navigate(['/']); // Navigate to the root route after success
+        },
+        error: (error) => {
+          console.error('Error creating ticket:', error);
+        }
+      });
     } else if (this.data === 'Edit' && this.ticketId) {
       // Update ticket logic
-      this.apiService.updateTicket(this.ticketId, formData).subscribe(/* ... */);
+      this.apiService.updateTicket(this.ticketId, formData).subscribe({
+        next: (response) => {
+          console.log('Ticket updated successfully', response);
+          this.router.navigate(['/']); // Navigate to the root route after success
+        },
+        error: (error) => {
+          console.error('Error updating ticket:', error);
+        }
+      });
     }
   }
 }
+
 }

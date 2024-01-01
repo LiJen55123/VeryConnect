@@ -1,9 +1,5 @@
 create-or-edit works!<br>
 
-<div *ngIf="data === 'Edit'">
-  Here is the input data: {{ data }}
-</div>
-
 <form [formGroup]="ticketForm" (ngSubmit)="submitForm()">
   <input type="text" formControlName="Name">
   <!-- ... other form fields ... -->
