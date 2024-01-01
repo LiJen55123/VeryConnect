@@ -1,4 +1,6 @@
 // Assume we have an interface like this:
+import {NgForOf} from "@angular/common";
+
 export interface Ticket {
   // Define properties based on your actual ticket structure
   id: number;
@@ -17,7 +19,7 @@ import { TicketModel } from "../models/ticket.model"; // Update the path as need
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [TicketComponent, MatButtonModule, RouterLink],
+  imports: [TicketComponent, MatButtonModule, RouterLink, NgForOf],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'] // Corrected this line
 })
@@ -29,10 +31,25 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {
     this.apiService.getTickets().subscribe({
       next: (data: TicketModel[]) => { // Assuming the data is an array of Ticket
-        console.log(data)
+        this.tickets=data;
       },
       error: (error:any) => {
         console.error('Error fetching tickets:', error);
+      }
+    });
+  }
+  handleDelete(ticketId: number): void {
+    // Call your ApiService to delete the ticket
+    this.apiService.deleteTicket(ticketId).subscribe({
+      next: () => {
+        console.log(`Ticket with ID ${ticketId} deleted successfully.`);
+        // Ensure this.tickets is defined before filtering
+        if (this.tickets) {
+          this.tickets = this.tickets.filter(ticket => ticket.Id !== ticketId);
+        }
+      },
+      error: (error) => {
+        console.error('Error deleting ticket:', error);
       }
     });
   }

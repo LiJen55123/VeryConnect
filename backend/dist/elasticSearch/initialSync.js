@@ -51,7 +51,3 @@ function syncMongoDBWithElasticsearch() {
     });
 }
 exports.syncMongoDBWithElasticsearch = syncMongoDBWithElasticsearch;
-if (require.main === module) {
-    syncMongoDBWithElasticsearch()
-        .catch((err) => console.error('An error occurred:', err));
-}

@@ -16,28 +16,31 @@ const express_1 = __importDefault(require("express"));
 const ticketSchema_1 = __importDefault(require("./ticketSchema"));
 const ticketSchema_2 = __importDefault(require("./ticketSchema")); // Update the path as per your project structure
 const ticketRouter = express_1.default.Router();
-ticketRouter.post('/tickets', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+ticketRouter.post('/tickets/form-fields', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newUser = new ticketSchema_1.default(req.body);
+        const newUser = new ticketSchema_1.default({
+            Name: req.body.Name,
+        });
         yield newUser.save();
-        res.status(201).send('Ticket created successfully');
+        res.status(201).json({ message: 'Ticket created successfully' });
     }
     catch (error) {
         if (error instanceof Error) {
-            res.status(500).send(error.message);
+            res.status(500).json({ message: error.message });
         }
         else {
-            // If it's not an Error instance, you might want to send a generic response
-            res.status(500).send('An error occurred');
+            res.status(500).json({ message: 'An unknown error occurred' });
         }
     }
 }));
 ticketRouter.get('/tickets', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield ticketSchema_2.default.find({});
-        res.status(200).json(users);
+        const tickets = yield ticketSchema_2.default.find({});
+        res.status(200).json(tickets);
+        console.log("success");
     }
     catch (error) {
+        console.log(error);
         if (error instanceof Error) {
             res.status(500).send(error.message);
         }
@@ -55,8 +58,9 @@ ticketRouter.get('/tickets/form-fields', (req, res) => {
             placeholder: 'Enter content',
             label: 'Name info'
         },
+        // ... include other form fields as needed
     };
     // Send the form structure to the frontend
-    res.status(200).json(ticketRouter);
+    res.status(200).json(ticketFormFields); // Corrected line here
 });
 exports.default = ticketRouter;

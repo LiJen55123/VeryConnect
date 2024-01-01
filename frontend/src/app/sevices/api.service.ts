@@ -27,5 +27,17 @@ export class ApiService {
   }
   getTickets(): Observable<TicketModel[]> {
   return this.http.get<TicketModel[]>(`${this.baseUrl}/tickets`);
-}
+  }
+  // Add a method to get a single ticket by its ID
+  getTicketById(ticketId: number): Observable<TicketModel> {
+    return this.http.get<TicketModel>(`${this.baseUrl}/tickets/${ticketId}`);
+  }
+  // Add a method to update a ticket
+  updateTicket(ticketId: number, ticketData: TicketModel): Observable<any> {
+    return this.http.put(`${this.baseUrl}/tickets/${ticketId}`, ticketData);
+  }
+
+  deleteTicket(ticketId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/tickets/${ticketId}`);
+  }
 }

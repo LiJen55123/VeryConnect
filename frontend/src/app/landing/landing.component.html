@@ -1,5 +1,20 @@
-landing works!
-<button mat-raised-button color="primary" [routerLink]="['/create_edit']" [state]="{ data: 'Create' }">Create New Tickets</button>
+<button mat-raised-button class="create_but" color="primary" [routerLink]="['/create_edit']">Create New Tickets</button>
 
-<app-ticket></app-ticket>
-
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>empty for align</th>
+      <!-- Add other header columns as needed -->
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let ticket of tickets">
+      <app-ticket
+        [ticket]="ticket"
+        (deleteRequest)="handleDelete($event)">
+      </app-ticket>
+    </ng-container>
+  </tbody>
+</table>
