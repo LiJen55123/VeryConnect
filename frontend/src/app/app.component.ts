@@ -10,4 +10,7 @@ import {MatButtonModule} from "@angular/material/button";
   imports: [RouterOutlet, MatToolbarModule, MatButtonModule, RouterLink],
   styleUrl: "app.component.scss"
 })
-export class AppComponent {}
+export class AppComponent {
+  title: string="Ticket Manager";
+
+}

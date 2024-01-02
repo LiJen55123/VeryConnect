@@ -1,8 +1,0 @@
-<tr>
-  <td>#{{ ticket.Id }}</td>
-  <td>{{ ticket.Name }}</td>
-  <td>
-    <button mat-raised-button color="accent" [routerLink]="['/create_edit', ticket.Id]">Edit</button>
-    <button mat-raised-button color="primary" (click)="onDelete()">Delete</button>
-  </td>
-</tr>

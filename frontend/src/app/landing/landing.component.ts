@@ -10,7 +10,6 @@ export interface Ticket {
 
 // Your component:
 import { Component, OnInit } from '@angular/core';
-import { TicketComponent } from '../ticket/ticket.component';
 import { MatButtonModule } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { ApiService } from "../sevices/api.service"; // Make sure this path is correct
@@ -19,12 +18,12 @@ import { TicketModel } from "../models/ticket.model"; // Update the path as need
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [TicketComponent, MatButtonModule, RouterLink, NgForOf],
+  imports: [MatButtonModule, RouterLink, NgForOf],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'] // Corrected this line
 })
 export class LandingComponent implements OnInit {
-  public tickets: TicketModel[] | undefined; // Changed to a concrete data structure
+  public tickets: TicketModel[] = [];
 
   constructor(private apiService: ApiService) {}
 
@@ -39,18 +38,21 @@ export class LandingComponent implements OnInit {
     });
   }
   handleDelete(ticketId: number): void {
-    // Call your ApiService to delete the ticket
-    this.apiService.deleteTicket(ticketId).subscribe({
-      next: () => {
-        console.log(`Ticket with ID ${ticketId} deleted successfully.`);
-        // Ensure this.tickets is defined before filtering
-        if (this.tickets) {
+    // Confirm with the user if they really want to delete the ticket
+    const confirmation = window.confirm('Are you sure you want to delete this ticket?');
+
+    if (confirmation) {
+      // Call your ApiService to delete the ticket
+      this.apiService.deleteTicket(ticketId).subscribe({
+        next: () => {
+          console.log(`Ticket with ID ${ticketId} deleted successfully.`);
+          // Remove the ticket from the local array to update the UI
           this.tickets = this.tickets.filter(ticket => ticket.Id !== ticketId);
+        },
+        error: (error) => {
+          console.error('Error deleting ticket:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error deleting ticket:', error);
-      }
-    });
+      });
+    }
   }
 }
