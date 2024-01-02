@@ -25,9 +25,10 @@ export class ApiService {
   createTicket(ticketData: TicketFormModel): Observable<any> {
     return this.http.post(`${this.baseUrl}/tickets/form-fields`, ticketData);
   }
-  getTickets(): Observable<TicketModel[]> {
-  return this.http.get<TicketModel[]>(`${this.baseUrl}/tickets`);
-  }
+  getTickets(offset: number = 0, limit: number = 20): Observable<TicketModel[]> {
+  // Update the URL to include query parameters for pagination
+  return this.http.get<TicketModel[]>(`${this.baseUrl}/tickets?offset=${offset}&limit=${limit}`);
+}
   // Add a method to get a single ticket by its ID
   getTicketById(ticketId: number): Observable<TicketModel> {
     return this.http.get<TicketModel>(`${this.baseUrl}/tickets/${ticketId}`);

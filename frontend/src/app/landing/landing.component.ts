@@ -9,7 +9,7 @@ export interface Ticket {
 }
 
 // Your component:
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import { MatButtonModule } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
 import { ApiService } from "../sevices/api.service"; // Make sure this path is correct
@@ -24,6 +24,9 @@ import { TicketModel } from "../models/ticket.model"; // Update the path as need
 })
 export class LandingComponent implements OnInit {
   public tickets: TicketModel[] = [];
+  private offset: number = 0;
+  private limit: number = 20; // Determine the appropriate page size
+  private allDataLoaded: boolean = false;
 
   constructor(private apiService: ApiService) {}
 
@@ -36,6 +39,32 @@ export class LandingComponent implements OnInit {
         console.error('Error fetching tickets:', error);
       }
     });
+  }
+  loadTickets(): void {
+    if (this.allDataLoaded) {
+      return;
+    }
+
+    this.apiService.getTickets(this.offset, this.limit).subscribe({
+      next: (data: TicketModel[]) => {
+        this.tickets = [...this.tickets, ...data];
+        this.offset += data.length;
+        if (data.length < this.limit) {
+          this.allDataLoaded = true; // No more data to load
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tickets:', error);
+      }
+    });
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: any): void {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      // Load more tickets
+      this.loadTickets();
+    }
   }
   handleDelete(ticketId: number): void {
     // Confirm with the user if they really want to delete the ticket

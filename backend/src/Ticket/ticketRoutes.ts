@@ -35,10 +35,17 @@ ticketRouter.post('/tickets/form-fields', async (req, res) => {
 });
 
 ticketRouter.get('/tickets', async (req, res) => {
+  // Make sure to assert the correct types for query parameters
+  const offset = parseInt(req.query.offset as string) || 0;
+  const limit = parseInt(req.query.limit as string) || 20;
+
   try {
-    const tickets = await Ticket.find({});
+    // Use the offset and limit in your database query to get paginated tickets
+    const tickets = await Ticket.find({})
+                                .skip(offset)
+                                .limit(limit);
     res.status(200).json(tickets);
-  } catch (error: unknown) {
+  } catch (error) {
     console.log(error);
     if (error instanceof Error) {
       res.status(500).send(error.message);
