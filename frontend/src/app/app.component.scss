@@ -18,3 +18,9 @@ main {
 //  align-items: center; /* Center-align children horizontally */
 //  justify-content: flex-start; /* Align children to the start of the main axis */
 //}
+h1 {
+  position: absolute;  /* or 'fixed' depending on your needs */
+  top: 0;
+  left: 0;
+  margin: 0; /* Remove any default margins */
+}
