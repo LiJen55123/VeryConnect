@@ -31,14 +31,7 @@ export class LandingComponent implements OnInit {
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    this.apiService.getTickets().subscribe({
-      next: (data: TicketModel[]) => { // Assuming the data is an array of Ticket
-        this.tickets=data;
-      },
-      error: (error:any) => {
-        console.error('Error fetching tickets:', error);
-      }
-    });
+    this.loadTickets();
   }
   loadTickets(): void {
     if (this.allDataLoaded) {
