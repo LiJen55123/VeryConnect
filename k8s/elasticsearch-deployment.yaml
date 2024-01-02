@@ -44,8 +44,4 @@ spec:
             - mountPath: /usr/share/elasticsearch/data
               name: esdata
       restartPolicy: Always
-      volumes:
-        - name: esdata
-          persistentVolumeClaim:
-            claimName: esdata
 status: {}
