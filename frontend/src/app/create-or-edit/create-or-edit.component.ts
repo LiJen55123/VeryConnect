@@ -80,7 +80,7 @@ export class CreateOrEditComponent implements OnInit {
       this.apiService.createTicket(formData).subscribe({
         next: (response) => {
           console.log('Ticket created successfully', response);
-          this.router.navigate(['/']); // Navigate to the root route after success
+          setTimeout(() => this.router.navigate(['/']), 1000)
         },
         error: (error) => {
           console.error('Error creating ticket:', error);
@@ -91,7 +91,7 @@ export class CreateOrEditComponent implements OnInit {
       this.apiService.updateTicket(this.ticketId, formData).subscribe({
         next: (response) => {
           console.log('Ticket updated successfully', response);
-          this.router.navigate(['/']); // Navigate to the root route after success
+          setTimeout(() => this.router.navigate(['/']), 1000)
         },
         error: (error) => {
           console.error('Error updating ticket:', error);

@@ -47,6 +47,7 @@ ticketRouter.get('/tickets/form-fields', (req, res) => {
 });
 ticketRouter.post('/tickets/form-fields', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("mission start");
         const newTicket = new ticketSchema_1.default({
             Name: req.body.Name,
         });
@@ -57,6 +58,7 @@ ticketRouter.post('/tickets/form-fields', (req, res) => __awaiter(void 0, void 0
             id: _id.toString(),
             body: ticketData
         });
+        console.log("mission success");
         res.status(201).json({ message: 'Ticket created successfully' });
     }
     catch (error) {

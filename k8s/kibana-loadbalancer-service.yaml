@@ -5,8 +5,8 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: kibana # Adjust this to match the labels of your Kibana deployment
+    io.kompose.service: kibana # Adjust this to match the labels of your Kibana deployment
   ports:
     - protocol: TCP
-      port: 5601
+      port: 80
       targetPort: 5601
