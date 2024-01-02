@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -36,10 +47,16 @@ ticketRouter.get('/tickets/form-fields', (req, res) => {
 });
 ticketRouter.post('/tickets/form-fields', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newUser = new ticketSchema_1.default({
+        const newTicket = new ticketSchema_1.default({
             Name: req.body.Name,
         });
-        yield newUser.save();
+        const savedTicket = yield newTicket.save();
+        const _a = savedTicket.toObject(), { _id } = _a, ticketData = __rest(_a, ["_id"]); // Exclude _id from the document body
+        yield esClient.index({
+            index: 'mongo_tickets',
+            id: _id.toString(),
+            body: ticketData
+        });
         res.status(201).json({ message: 'Ticket created successfully' });
     }
     catch (error) {
@@ -109,6 +126,7 @@ ticketRouter.get('/tickets/:ticketId', (req, res) => __awaiter(void 0, void 0, v
     }
 }));
 ticketRouter.put('/tickets/:ticketId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     const { ticketId } = req.params;
     // Convert the ticketId from string to number
     const numericId = parseInt(ticketId, 10);
@@ -125,6 +143,25 @@ ticketRouter.put('/tickets/:ticketId', (req, res) => __awaiter(void 0, void 0, v
         if (result.modifiedCount === 0) {
             return res.status(404).send(`Ticket with ID ${numericId} not found or data is the same.`);
         }
+        const searchResponse = yield esClient.search({
+            index: 'mongo_tickets',
+            body: {
+                query: {
+                    match: { Id: numericId }
+                }
+            }
+        });
+        const esDocId = (_b = searchResponse.body.hits.hits[0]) === null || _b === void 0 ? void 0 : _b._id;
+        if (esDocId) {
+            // Update the document in Elasticsearch
+            yield esClient.update({
+                index: 'mongo_tickets',
+                id: esDocId,
+                body: {
+                    doc: updateData
+                }
+            });
+        }
         res.status(200).json({ message: 'Ticket successfully updated' });
     }
     catch (error) {
@@ -133,6 +170,7 @@ ticketRouter.put('/tickets/:ticketId', (req, res) => __awaiter(void 0, void 0, v
     }
 }));
 ticketRouter.delete('/tickets/:ticketId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
     const { ticketId } = req.params;
     // Convert the ticketId from string to number
     const numericId = parseInt(ticketId, 10);
@@ -146,6 +184,22 @@ ticketRouter.delete('/tickets/:ticketId', (req, res) => __awaiter(void 0, void 0
         // If result.deletedCount is 0, no document was found with that ID
         if (result.deletedCount === 0) {
             return res.status(404).send(`Ticket with ID ${numericId} not found.`);
+        }
+        const searchResponse = yield esClient.search({
+            index: 'mongo_tickets',
+            body: {
+                query: {
+                    match: { Id: numericId }
+                }
+            }
+        });
+        const esDocId = (_c = searchResponse.body.hits.hits[0]) === null || _c === void 0 ? void 0 : _c._id;
+        if (esDocId) {
+            // Delete the document from Elasticsearch
+            yield esClient.delete({
+                index: 'mongo_tickets',
+                id: esDocId
+            });
         }
         // If the ticket is deleted successfully, send a success response
         res.status(200).json({ message: 'Ticket successfully deleted' });
