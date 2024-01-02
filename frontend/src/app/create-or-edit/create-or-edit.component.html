@@ -1,11 +1,10 @@
-create-or-edit works!<br>
 
 <form [formGroup]="ticketForm" (ngSubmit)="submitForm()">
   <input type="text" formControlName="Name">
   <!-- ... other form fields ... -->
 
   <!-- Submit button -->
-  <button type="submit" [disabled]="!ticketForm.valid">Submit</button>
+  <button type="submit" [disabled]="!ticketForm.valid">{{ data }}</button>
 </form>
 
 

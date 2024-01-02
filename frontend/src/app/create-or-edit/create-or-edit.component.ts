@@ -6,6 +6,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {TicketFormModel} from "../models/ticket-form.model"; // Make sure the path is correct
 import {FormGroup, FormControl, ReactiveFormsModule} from '@angular/forms';
 import {TicketModel} from "../models/ticket.model";
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-or-edit',
@@ -18,6 +19,7 @@ import {TicketModel} from "../models/ticket.model";
   styleUrls: ['./create-or-edit.component.scss']
 })
 export class CreateOrEditComponent implements OnInit {
+  public title: string = ''; // Variable for the title
   public data: string | undefined;
   public formFields: TicketFormModel | undefined; // Store the form fields here
   public ticketForm: FormGroup = new FormGroup({
@@ -26,9 +28,10 @@ export class CreateOrEditComponent implements OnInit {
   });
   public ticketId?: number;
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private apiService: ApiService
+      private titleService: Title,
+      private route: ActivatedRoute,
+      private router: Router,
+      private apiService: ApiService
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +40,7 @@ export class CreateOrEditComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.data = data['data'];  // 'data' here would be set in your route configuration
     });
-    console.log(this.data)
+
     // If we're in 'edit' mode, get the 'ticketId' from route parameters
     if (this.data === 'Edit') {
       this.route.params.subscribe(params => {
@@ -55,6 +58,14 @@ export class CreateOrEditComponent implements OnInit {
         }
       });
     }
+
+    if (this.data === 'Create') {
+    this.title = 'Create a Ticket';
+    this.titleService.setTitle('Create a Ticket'); // Set page title
+  } else if (this.data === 'Edit') {
+    this.title = `Edit Ticket #${this.ticketId}`;
+    this.titleService.setTitle(this.title); // Set page title
+  }
   }
 
   getFormField(): void {

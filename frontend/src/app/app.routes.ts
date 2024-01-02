@@ -15,7 +15,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    title: 'App about Page',
+    title: 'Ticket Manager',
     component: LandingComponent,
   },
 ];
