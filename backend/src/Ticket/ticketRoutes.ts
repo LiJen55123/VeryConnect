@@ -24,9 +24,15 @@ ticketRouter.get('/tickets/form-fields', (req, res) => {
 });
 ticketRouter.post('/tickets/form-fields', async (req, res) => {
   try {
-    const newUser = new TicketSchema({ // <-- Change this to use the model
+    const newTicket = new TicketSchema({ // <-- Change this to use the model
       Name: req.body.Name,});
-    await newUser.save();
+    const savedTicket = await newTicket.save();
+    const { _id, ...ticketData } = savedTicket.toObject(); // Exclude _id from the document body
+    await esClient.index({
+      index: 'mongo_tickets',
+      id: _id.toString(),
+      body: ticketData
+    });
     res.status(201).json({ message: 'Ticket created successfully' });
   } catch (error) {
     if (error instanceof Error) {
@@ -130,7 +136,25 @@ ticketRouter.put('/tickets/:ticketId', async (req, res) => {
     if (result.modifiedCount === 0) {
       return res.status(404).send(`Ticket with ID ${numericId} not found or data is the same.`);
     }
-
+    const searchResponse = await esClient.search({
+      index: 'mongo_tickets',
+      body: {
+        query: {
+          match: { Id: numericId }
+        }
+      }
+    });
+    const esDocId = searchResponse.body.hits.hits[0]?._id;
+    if (esDocId) {
+      // Update the document in Elasticsearch
+      await esClient.update({
+        index: 'mongo_tickets',
+        id: esDocId,
+        body: {
+          doc: updateData
+        }
+      });
+    }
     res.status(200).json({ message: 'Ticket successfully updated' });
   } catch (error) {
     console.error('Error updating ticket:', error);
@@ -158,7 +182,23 @@ ticketRouter.delete('/tickets/:ticketId', async (req, res) => {
     if (result.deletedCount === 0) {
       return res.status(404).send(`Ticket with ID ${numericId} not found.`);
     }
+    const searchResponse = await esClient.search({
+      index: 'mongo_tickets',
+      body: {
+        query: {
+          match: { Id: numericId }
+        }
+      }
+    });
 
+    const esDocId = searchResponse.body.hits.hits[0]?._id;
+    if (esDocId) {
+      // Delete the document from Elasticsearch
+      await esClient.delete({
+        index: 'mongo_tickets',
+        id: esDocId
+      });
+    }
     // If the ticket is deleted successfully, send a success response
     res.status(200).json({ message: 'Ticket successfully deleted' });
   } catch (error) {
