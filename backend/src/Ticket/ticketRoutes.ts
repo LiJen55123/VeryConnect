@@ -1,9 +1,12 @@
 import express from 'express';
 import TicketSchema from './ticketSchema';
 import Ticket from "./ticketSchema"; // Update the path as per your project structure
+import { Client } from '@elastic/elasticsearch';
 
 const ticketRouter = express.Router();
-
+const esClient = new Client({
+  node: 'http://elasticsearch:9200' // Replace with your actual Elasticsearch node address
+});
 ticketRouter.get('/tickets/form-fields', (req, res) => {
   // Define the structure for the user creation form
   const ticketFormFields = {
@@ -35,22 +38,34 @@ ticketRouter.post('/tickets/form-fields', async (req, res) => {
 });
 
 ticketRouter.get('/tickets', async (req, res) => {
-  const offset = parseInt(req.query.offset as string) || 0;
-  const limit = parseInt(req.query.limit as string) || 20;
+  const offset = parseInt(req.query.offset as string, 10) || 0;
+  const limit = parseInt(req.query.limit as string, 10) || 20;
+  interface ITicket {
+  Id: number;
+  Name: string;
+  createdAt: Date;
+}
+
 
   try {
-    const tickets = await Ticket.find({})
-                                .sort({ Id: 1 }) // Add a sort by 'id' in ascending order
-                                .skip(offset)
-                                .limit(limit);
+    // Replace the Ticket.find({}) with an Elasticsearch search query
+    const { body } = await esClient.search({
+      index: 'mongo_tickets', // Your Elasticsearch index name
+      from: offset, // Equivalent to "skip" in MongoDB
+      size: limit, // Equivalent to "limit" in MongoDB
+      body: {
+        sort: [
+          { Id: { order: 'asc' } } // Sort by 'Id' in ascending order
+        ]
+      }
+    });
+
+    // The search results are in body.hits.hits
+    const tickets: ITicket[] = body.hits.hits.map((hit: { _source: ITicket }) => hit._source);
     res.status(200).json(tickets);
   } catch (error) {
-    console.log(error);
-    if (error instanceof Error) {
-      res.status(500).send(error.message);
-    } else {
-      res.status(500).send('An error occurred');
-    }
+    console.error('Elasticsearch search error:', error);
+    res.status(500).send('An error occurred during the search');
   }
 });
 ticketRouter.get('/tickets/:ticketId', async (req, res) => {
