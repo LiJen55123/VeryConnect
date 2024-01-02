@@ -40,8 +40,5 @@ spec:
             - containerPort: 9300
               protocol: TCP
           resources: {}
-          volumeMounts:
-            - mountPath: /usr/share/elasticsearch/data
-              name: esdata
       restartPolicy: Always
 status: {}
