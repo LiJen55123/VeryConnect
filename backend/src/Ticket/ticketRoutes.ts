@@ -40,24 +40,38 @@ ticketRouter.post('/tickets/form-fields', async (req, res) => {
 ticketRouter.get('/tickets', async (req, res) => {
   const offset = parseInt(req.query.offset as string, 10) || 0;
   const limit = parseInt(req.query.limit as string, 10) || 20;
+  const keyword = req.query.keyword as string || "";
   interface ITicket {
   Id: number;
   Name: string;
   createdAt: Date;
-}
+  }
 
 
   try {
+    const searchBody: any = {
+      sort: [
+        { Id: { order: 'asc' } } // Sort by 'Id' in ascending order
+      ]
+    };
+
+    // Add search query if keyword is present
+    if (keyword.trim() !== "") {
+      searchBody.query = {
+        multi_match: {
+          query: keyword,
+          fields: ["Name",], // Specify fields to search in, or remove to search in all fields
+          fuzziness: "AUTO", // Use fuzziness if you want to tolerate misspellings
+          prefix_length: 2
+        }
+      };
+    }
     // Replace the Ticket.find({}) with an Elasticsearch search query
     const { body } = await esClient.search({
       index: 'mongo_tickets', // Your Elasticsearch index name
       from: offset, // Equivalent to "skip" in MongoDB
       size: limit, // Equivalent to "limit" in MongoDB
-      body: {
-        sort: [
-          { Id: { order: 'asc' } } // Sort by 'Id' in ascending order
-        ]
-      }
+      body: searchBody
     });
 
     // The search results are in body.hits.hits
@@ -68,6 +82,7 @@ ticketRouter.get('/tickets', async (req, res) => {
     res.status(500).send('An error occurred during the search');
   }
 });
+
 ticketRouter.get('/tickets/:ticketId', async (req, res) => {
   const { ticketId } = req.params;
 

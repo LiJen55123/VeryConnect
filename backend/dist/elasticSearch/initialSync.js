@@ -31,11 +31,15 @@ function syncMongoDBWithElasticsearch() {
             const documents = yield Model.find({}).lean(); // .lean() for better performance
             for (const doc of documents) {
                 try {
+                    // Rename the _id field to mongoId
+                    const mongoId = doc._id.toString();
+                    const docWithMongoId = Object.assign(Object.assign({}, doc), { mongoId });
+                    delete docWithMongoId._id; // Remove the original _id field
                     // Index each document in Elasticsearch
                     yield esClient.index({
                         index: `mongo_${collectionName.toLowerCase()}`,
-                        id: doc._id.toString(),
-                        body: doc
+                        id: mongoId, // Use _id as the document ID in Elasticsearch
+                        body: docWithMongoId // Use the modified document
                     });
                 }
                 catch (err) {
@@ -46,7 +50,7 @@ function syncMongoDBWithElasticsearch() {
         }
         console.log('Sync complete.');
         // Optionally close connections if this is a one-time script
-        mongoose_1.default.connection.close();
+        //mongoose.connection.close();
         // esClient.close(); // Uncomment if there's a close method in your Elasticsearch client version
     });
 }

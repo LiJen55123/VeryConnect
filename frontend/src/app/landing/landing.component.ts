@@ -1,5 +1,13 @@
 // Assume we have an interface like this:
 import {NgForOf} from "@angular/common";
+// Your component:
+import {Component, HostListener, OnInit} from '@angular/core';
+import {MatButtonModule} from "@angular/material/button";
+import {RouterLink} from "@angular/router";
+import {ApiService} from "../sevices/api.service"; // Make sure this path is correct
+import {TicketModel} from "../models/ticket.model";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input"; // Update the path as needed
 
 export interface Ticket {
   // Define properties based on your actual ticket structure
@@ -8,17 +16,10 @@ export interface Ticket {
   // ...other properties
 }
 
-// Your component:
-import {Component, HostListener, OnInit} from '@angular/core';
-import { MatButtonModule } from "@angular/material/button";
-import { RouterLink } from "@angular/router";
-import { ApiService } from "../sevices/api.service"; // Make sure this path is correct
-import { TicketModel } from "../models/ticket.model"; // Update the path as needed
-
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [MatButtonModule, RouterLink, NgForOf],
+  imports: [MatButtonModule, RouterLink, NgForOf, MatFormFieldModule, MatInputModule],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'] // Corrected this line
 })
@@ -27,20 +28,33 @@ export class LandingComponent implements OnInit {
   private offset: number = 0;
   private limit: number = 20; // Determine the appropriate page size
   private allDataLoaded: boolean = false;
+  private searchTerm: string = '';
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.loadTickets();
   }
-  loadTickets(): void {
-    if (this.allDataLoaded) {
+  searchTickets(event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    // Reset tickets and offset for a new search
+    this.tickets = [];
+    this.offset = 0;
+    this.allDataLoaded = false;
+
+    // Call the search method if the term length is 3 or more
+    if (this.searchTerm.length >= 3) {
+      this.loadTickets(true);
+    }
+  }
+  loadTickets(isSearch: boolean = false): void {
+    if (this.allDataLoaded && !isSearch) {
       return;
     }
 
-    this.apiService.getTickets(this.offset, this.limit).subscribe({
+    this.apiService.searchTickets(this.searchTerm, this.offset, this.limit).subscribe({
       next: (data: TicketModel[]) => {
-        this.tickets = [...this.tickets, ...data];
+        this.tickets = isSearch ? data : [...this.tickets, ...data];
         this.offset += data.length;
         if (data.length < this.limit) {
           this.allDataLoaded = true; // No more data to load

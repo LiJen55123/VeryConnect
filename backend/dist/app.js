@@ -4,10 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
 const ticketRoutes_1 = __importDefault(require("./Ticket/ticketRoutes"));
-//import { syncMongoDBWithElasticsearch } from './elasticSearch/initialSync'; // Assuming
+const initialSync_1 = require("./elasticSearch/initialSync"); // Assuming
 const app = (0, express_1.default)();
 const port = 8000;
 app.use((0, cors_1.default)());
@@ -15,11 +14,11 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Replace with your MongoDB connection string
 const mongoUri = 'mongodb://local_dev:local_dev@mongodb:27017/local_dev?authSource=admin';
-//syncMongoDBWithElasticsearch().then(() => console.log('Sync complete.'))
-//    .catch((err: Error) => console.error('An error occurred:', err));
-mongoose_1.default.connect(mongoUri)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
+(0, initialSync_1.syncMongoDBWithElasticsearch)().then(() => console.log('Sync complete.'))
+    .catch((err) => console.error('An error occurred:', err));
+//mongoose.connect(mongoUri)
+//  .then(() => console.log('MongoDB connected'))
+//  .catch(err => console.error('MongoDB connection error:', err));
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });

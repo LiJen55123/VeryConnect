@@ -1,7 +1,7 @@
 // src/app/services/api.service.ts
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import {TicketFormModel} from "../models/ticket-form.model";
 import {Observable} from "rxjs";
@@ -37,7 +37,14 @@ export class ApiService {
   updateTicket(ticketId: number, ticketData: TicketModel): Observable<any> {
     return this.http.put(`${this.baseUrl}/tickets/${ticketId}`, ticketData);
   }
+  searchTickets(searchTerm: string, offset: number, limit: number): Observable<TicketModel[]> {
+  const params = new HttpParams()
+    .set('offset', offset.toString())
+    .set('limit', limit.toString())
+    .set('keyword', searchTerm);
 
+  return this.http.get<TicketModel[]>(`${this.baseUrl}/tickets`, { params });
+}
   deleteTicket(ticketId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/tickets/${ticketId}`);
   }

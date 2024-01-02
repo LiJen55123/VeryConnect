@@ -38,6 +38,7 @@ services:
 
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     command: ng serve --host 0.0.0.0 --port 3000 --disable-host-check
@@ -52,15 +53,13 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.12.1  # Use the version that matches the Elasticsearch version
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-
+  #kibana:
+  #  image: docker.elastic.co/kibana/kibana:7.12.1  # Use the version that matches the Elasticsearch version
+  #  environment:
+  #    - ELASTICSEARCH_URL=http://elasticsearch:9200
+  #  ports:
+  #    - "5601:5601"
+  #  depends_on:
+  #    - elasticsearch
 volumes:
   esdata: # This volume is used for storing Elasticsearch data

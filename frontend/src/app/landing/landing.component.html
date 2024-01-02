@@ -1,5 +1,12 @@
 <button mat-raised-button class="create_but" color="primary" [routerLink]="['/create_edit']">Create New Tickets</button>
 <hr>
+<div class="search-container">
+  <mat-form-field appearance="fill">
+    <mat-label>Search Tickets</mat-label>
+    <input matInput (keyup)="searchTickets($event)" placeholder="Type 3 or more characters...">
+  </mat-form-field>
+</div>
+<hr>
 <table>
   <thead>
     <tr>
