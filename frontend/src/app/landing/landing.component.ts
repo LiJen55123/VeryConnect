@@ -43,7 +43,7 @@ export class LandingComponent implements OnInit {
     this.allDataLoaded = false;
 
     // Call the search method if the term length is 3 or more
-    if (this.searchTerm.length >= 3) {
+    if (this.searchTerm.length >= 3 || this.searchTerm.length == 0) {
       this.loadTickets(true);
     }
   }

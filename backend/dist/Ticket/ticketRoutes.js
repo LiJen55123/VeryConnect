@@ -81,11 +81,22 @@ ticketRouter.get('/tickets', (req, res) => __awaiter(void 0, void 0, void 0, fun
         // Add search query if keyword is present
         if (keyword.trim() !== "") {
             searchBody.query = {
-                multi_match: {
-                    query: keyword,
-                    fields: ["Name",], // Specify fields to search in, or remove to search in all fields
-                    fuzziness: "AUTO", // Use fuzziness if you want to tolerate misspellings
-                    prefix_length: 2
+                bool: {
+                    should: [
+                        {
+                            match: {
+                                Name: {
+                                    query: keyword,
+                                    fuzziness: "AUTO"
+                                }
+                            }
+                        },
+                        {
+                            wildcard: {
+                                Name: `*${keyword}*`
+                            }
+                        }
+                    ]
                 }
             };
         }
